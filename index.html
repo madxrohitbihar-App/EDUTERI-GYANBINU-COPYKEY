@@ -612,21 +612,35 @@
                 <span class="live-dot"></span>
                 <span id="section-label">All Active App</span>
             </div>
-            <span id="active-count" style="color: var(--neon-cyan);">1 Available</span>
+            <span id="active-count" style="color: var(--neon-cyan);">2 Available</span>
         </div>
 
         <!-- TAB 1: ACTIVE APPS -->
         <div class="app-list tab-content active-tab" id="tab-active">
-            <div class="app-card" data-name="eduteri">
+            <div class="app-card" data-name="eduteria app 1st">
                 <div class="app-info">
-                    <img src="https://i.postimg.cc/13xCjMbD/image-search-1787721768673.webp" class="app-icon" alt="EDUTERI">
+                    <img src="https://i.postimg.cc/13xCjMbD/image-search-1787721768673.webp" class="app-icon" alt="EDUTERIA App 1st">
                     <div class="app-details">
-                        <span class="app-name">EDUTERI</span>
+                        <span class="app-name">EDUTERIA App 1st</span>
                         <span class="app-tag">Server Active</span>
                     </div>
                 </div>
                 <div class="app-actions">
-                    <button class="fav-btn" onclick="toggleFavorite(this, 'EDUTERI')"><i class="fa-solid fa-heart"></i></button>
+                    <button class="fav-btn" onclick="toggleFavorite(this, 'EDUTERIA App 1st')"><i class="fa-solid fa-heart"></i></button>
+                    <a href="https://eduteriaa.vercel.app/" class="open-btn" target="_blank">Open</a>
+                </div>
+            </div>
+
+            <div class="app-card" data-name="eduteria app 2nd">
+                <div class="app-info">
+                    <img src="https://i.postimg.cc/13xCjMbD/image-search-1787721768673.webp" class="app-icon" alt="EDUTERIA App 2nd">
+                    <div class="app-details">
+                        <span class="app-name">EDUTERIA App 2nd</span>
+                        <span class="app-tag">Server Active</span>
+                    </div>
+                </div>
+                <div class="app-actions">
+                    <button class="fav-btn" onclick="toggleFavorite(this, 'EDUTERIA App 2nd')"><i class="fa-solid fa-heart"></i></button>
                     <a href="https://eduteria-studyapkmod.vercel.app/" class="open-btn" target="_blank">Open</a>
                 </div>
             </div>
@@ -775,7 +789,7 @@
             if (tabName === 'active') {
                 document.getElementById('tab-active').classList.add('active-tab');
                 label.innerText = "All Active App";
-                countLabel.innerText = "1 Available";
+                countLabel.innerText = "2 Available";
             } else if (tabName === 'upcoming') {
                 document.getElementById('tab-upcoming').classList.add('active-tab');
                 label.innerText = "All Upcoming Server";
