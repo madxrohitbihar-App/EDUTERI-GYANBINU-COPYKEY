@@ -91,97 +91,6 @@
             letter-spacing: 3px;
         }
 
-        /* Auth Screen (Verification Overlay) */
-        #authScreen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(5, 5, 10, 0.95);
-            backdrop-filter: blur(15px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 99998;
-            padding: 20px;
-        }
-
-        .card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-neon);
-            padding: 30px;
-            border-radius: 20px;
-            text-align: center;
-            max-width: 380px;
-            width: 100%;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
-        }
-
-        .card h2 {
-            color: var(--neon-cyan);
-            margin-bottom: 10px;
-            font-size: 20px;
-        }
-
-        .key-input {
-            width: 100%;
-            padding: 12px;
-            border-radius: 12px;
-            border: 1px solid var(--border-neon);
-            background: rgba(255,255,255,0.05);
-            color: #fff;
-            text-align: center;
-            margin-bottom: 15px;
-            outline: none;
-            text-transform: uppercase;
-            font-weight: bold;
-            letter-spacing: 1px;
-            font-size: 14px;
-        }
-
-        .key-input:focus {
-            border-color: var(--neon-cyan);
-            box-shadow: var(--shadow-neon);
-        }
-
-        .btn {
-            padding: 12px;
-            border-radius: 12px;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-            width: 100%;
-            margin-bottom: 10px;
-            font-size: 13.5px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: 0.2s;
-        }
-
-        .btn-get { 
-            background: rgba(255, 255, 255, 0.08); 
-            border: 1px solid var(--border-neon); 
-            color: var(--neon-cyan);
-        }
-
-        .btn-verify { 
-            background: var(--gradient-btn); 
-        }
-
-        .btn:active {
-            transform: scale(0.98);
-        }
-
-        #status-msg { 
-            font-size: 13px; 
-            margin-top: 10px; 
-            font-weight: bold; 
-        }
-
         /* Main Container */
         .app-container {
             width: 100%;
@@ -559,25 +468,6 @@
         <div class="splash-title">MADXROHITBIHAR</div>
     </div>
 
-    <!-- Device Verification Screen -->
-    <div id="authScreen" style="display: none;">
-        <div class="card">
-            <h2>Device Verification</h2>
-            <p style="color:var(--text-secondary); font-size: 13px; margin-bottom: 20px;">Please enter your access key obtained from Get Key to unlock the portal (24 Hours Validity).</p>
-            
-            <input type="text" id="accessKeyInput" class="key-input" placeholder="ENTER ACCESS KEY">
-            
-            <button class="btn btn-get" onclick="openAroLinks()">
-                <i class="fa-solid fa-key"></i> Get Key
-            </button>
-            <button class="btn btn-verify" onclick="verifyUserKey()">
-                <i class="fa-solid fa-unlock"></i> Verify & Open Portal
-            </button>
-
-            <div id="status-msg"></div>
-        </div>
-    </div>
-
     <!-- Community Modal -->
     <div id="popupModal">
         <div class="modal-card">
@@ -690,92 +580,25 @@
     </div>
 
     <script>
-        // Check 24 hours session immediately on load
-        (function() {
-            const expiryTime = localStorage.getItem("app_expiry_time");
-            const authScreen = document.getElementById('authScreen');
-            if (expiryTime && new Date().getTime() < parseInt(expiryTime)) {
-                if(authScreen) authScreen.style.display = 'none';
-            } else {
-                if(authScreen) authScreen.style.display = 'flex';
-            }
+        document.addEventListener("DOMContentLoaded", () => {
             loadFavoritesState();
-        })();
 
-        function generateSecretKey() {
-            const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            let generatedKey = '';
-            for (let i = 0; i < 15; i++) {
-                generatedKey += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            return generatedKey;
-        }
-
-        function openAroLinks() {
-            const apiToken = "828c34db80ec53e94e7174f5f52e0b274a38ab2d";
-            const freshKey = generateSecretKey();
-            localStorage.setItem("expected_app_key", freshKey);
-
-            const targetUrl = "https://madxrohitbihar-app.github.io/Gyanbindu-key/?key=" + freshKey;
-            const apiUrl = `https://arolinks.com/api?api=${apiToken}&url=${encodeURIComponent(targetUrl)}`;
-
-            const msgDiv = document.getElementById("status-msg");
-            msgDiv.style.color = "#00f2fe";
-            msgDiv.innerText = "Generating Token...";
-            
-            fetch(apiUrl)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === "success" && data.shortenedUrl) {
-                        window.location.href = data.shortenedUrl;
-                    } else {
-                        msgDiv.style.color = "#ff4d4d";
-                        msgDiv.innerText = "Error generating link!";
-                    }
-                })
-                .catch(() => {
-                    msgDiv.style.color = "#ff4d4d";
-                    msgDiv.innerText = "Network Error!";
-                });
-        }
-
-        function verifyUserKey() {
-            const userKey = document.getElementById("accessKeyInput").value.trim().toUpperCase();
-            const expectedKey = localStorage.getItem("expected_app_key");
-            const usedKeys = JSON.parse(localStorage.getItem("used_app_keys") || "[]");
-            const msgDiv = document.getElementById("status-msg");
-
-            if (!userKey) {
-                msgDiv.style.color = "#ff4d4d";
-                msgDiv.innerText = "Please enter access key!";
-                return;
-            }
-
-            if (usedKeys.includes(userKey)) {
-                msgDiv.style.color = "#ff4d4d";
-                msgDiv.innerText = "This token has already been used! Please generate a new key.";
-                return;
-            }
-
-            if ((expectedKey && userKey === expectedKey) || userKey.length === 15) {
-                usedKeys.push(userKey);
-                localStorage.setItem("used_app_keys", JSON.stringify(usedKeys));
-
-                const twentyFourHours = 24 * 60 * 60 * 1000;
-                const expiryTimestamp = new Date().getTime() + twentyFourHours;
-                localStorage.setItem("app_expiry_time", expiryTimestamp);
-
-                document.getElementById('authScreen').style.display = 'none';
-
-                if (window.history.replaceState) {
-                    const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
-                    window.history.replaceState({path: cleanUrl}, '', cleanUrl);
-                }
+            const splash = document.getElementById("splash-screen");
+            if (!sessionStorage.getItem('splashShown')) {
+                setTimeout(() => {
+                    splash.classList.add("hide-splash");
+                    sessionStorage.setItem('splashShown', 'true');
+                }, 1200);
             } else {
-                msgDiv.style.color = "#ff4d4d";
-                msgDiv.innerText = "Invalid Access Token!";
+                splash.style.display = 'none';
             }
-        }
+
+            if (!sessionStorage.getItem('popupShown')) {
+                setTimeout(() => {
+                    document.getElementById('popupModal').style.display = 'flex';
+                }, 2000);
+            }
+        });
 
         function switchTab(tabName, btnElement) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active-tab'));
@@ -858,32 +681,6 @@
                 card.style.display = (!name || name.includes(query)) ? 'flex' : 'none';
             });
         }
-
-        document.addEventListener("DOMContentLoaded", () => {
-            const splash = document.getElementById("splash-screen");
-            
-            if (!sessionStorage.getItem('splashShown')) {
-                setTimeout(() => {
-                    splash.classList.add("hide-splash");
-                    sessionStorage.setItem('splashShown', 'true');
-                }, 1200);
-            } else {
-                splash.style.display = 'none';
-            }
-
-            const urlParams = new URLSearchParams(window.location.search);
-            const urlKey = urlParams.get('key');
-            if (urlKey) {
-                document.getElementById('accessKeyInput').value = urlKey;
-                localStorage.setItem("expected_app_key", urlKey);
-            }
-
-            if (!sessionStorage.getItem('popupShown')) {
-                setTimeout(() => {
-                    document.getElementById('popupModal').style.display = 'flex';
-                }, 2000);
-            }
-        });
 
         function closePopup() {
             document.getElementById('popupModal').style.display = 'none';
